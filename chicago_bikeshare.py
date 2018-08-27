@@ -4,7 +4,6 @@
 # Here goes the imports
 import csv
 import matplotlib.pyplot as plt
-
 # Let's read the data as a list
 print("Reading the document...")
 with open("chicago.csv", "r") as file_read:
@@ -32,6 +31,8 @@ print("\n\nTASK 1: Printing the first 20 samples")
 
 # Let's change the data_list to remove the header from it.
 data_list = data_list[1:]
+for i in range(0, 19):
+    print(data_list[i])
 
 # We can access the features through index
 # E.g. sample[6] to print gender or sample[-2]
@@ -41,6 +42,8 @@ input("Press Enter to continue...")
 # TODO: Print the `gender` of the first 20 rows
 
 print("\nTASK 2: Printing the genders of the first 20 samples")
+for i in range(0, 19):
+    print(data_list[i][6])
 
 
 # Cool! We can get the rows(samples) iterating with a for and the columns(features) by index.
@@ -50,8 +53,19 @@ input("Press Enter to continue...")
 # TASK 3
 # TODO: Create a function to add the columns(features) of a list in another list in the same order
 def column_to_list(data, index):
+    """
+    Function that retrieve a list from a given column
+    Args:
+        param1: datalist from the chicago.cvs
+        param2: index for the column to be retrieve
+    Returns:
+        converted list of the column
+    """
     column_list = []
     # Tip: You can use a for to iterate over the samples, get the feature by index and append into a list
+    for data in data:
+        column_list.append(data[index])
+
     return column_list
 
 
@@ -71,6 +85,12 @@ input("Press Enter to continue...")
 # TODO: Count each gender. You should not use a function to do that.
 male = 0
 female = 0
+for data in data_list:
+    if data[6] == 'Male':
+        male += 1
+    elif data[6] == 'Female':
+        female += 1
+
 
 
 # Checking the result
@@ -87,8 +107,20 @@ input("Press Enter to continue...")
 # TODO: Create a function to count the genders. Return a list
 # Should return a list with [count_male, counf_female] (e.g., [10, 15] means 10 Males, 15 Females)
 def count_gender(data_list):
+    """
+    Function that retrieve a Tuple of Male and Female quantity of the datalist
+    Args:
+        param1: datalist from the chicago.cvs
+    Returns:
+        Tuple of [male, female] quantity
+    """
     male = 0
     female = 0
+    for data in data_list:
+        if data[6] == 'Male':
+            male += 1
+        elif data[6] == 'Female':
+            female += 1
     return [male, female]
 
 
@@ -107,7 +139,21 @@ input("Press Enter to continue...")
 # TODO: Create a function to get the most popular gender and print the gender as string.
 # We expect to see "Male", "Female" or "Equal" as answer.
 def most_popular_gender(data_list):
+    """
+    Function that return if the data list contains more Male, Female or equal genders.
+    Args:
+        param1: data list from the chicago.cvs
+    Returns:
+        Male, Female or Equal
+    """
     answer = ""
+    male, female = count_gender(data_list)
+    if male == female:
+        answer = 'Equal'
+    elif male > female:
+        answer = 'Male'
+    else:
+        answer = 'Female'
     return answer
 
 
@@ -135,7 +181,33 @@ input("Press Enter to continue...")
 # TASK 7
 # TODO: Plot a similar graph for user_types. Make sure the legend is correct.
 print("\nTASK 7: Check the chart!")
+def count_user_type(data_list):
+    """
+    Function that retrieve a Tuple of Customers and Subscribers quantity of the datalist
+    Args:
+        param1: datalist from the chicago.cvs
+    Returns:
+        Tuple of [Customer, Subscriber] quantity
+    """
+    customer = 0
+    subscriber = 0
+    for data in data_list:
+        if data[5] == 'Customer':
+            customer += 1
+        elif data[5] == 'Subscriber':
+            subscriber += 1
+    return [customer, subscriber]
 
+user_type_list = column_to_list(data_list, -3)
+types = ["Customer", "Subscriber"]
+quantity = count_user_type(data_list)
+y_pos = list(range(len(types)))
+plt.bar(y_pos, quantity)
+plt.ylabel('Quantity')
+plt.xlabel('User Type')
+plt.xticks(y_pos, types)
+plt.title('Quantity by User Type')
+plt.show(block=True)
 
 input("Press Enter to continue...")
 # TASK 8
@@ -143,7 +215,7 @@ input("Press Enter to continue...")
 male, female = count_gender(data_list)
 print("\nTASK 8: Why the following condition is False?")
 print("male + female == len(data_list):", male + female == len(data_list))
-answer = "Type your answer here."
+answer = "That is data rows without gender especification"
 print("Answer:", answer)
 
 # ------------ DO NOT CHANGE ANY CODE HERE ------------
@@ -156,10 +228,26 @@ input("Press Enter to continue...")
 # TODO: Find the Minimum, Maximum, Mean and Median trip duration.
 # You should not use ready functions to do that, like max() or min().
 trip_duration_list = column_to_list(data_list, 2)
-min_trip = 0.
+min_trip = 100000.
 max_trip = 0.
 mean_trip = 0.
 median_trip = 0.
+trip_duration_list = list(map(int, trip_duration_list))
+for duration in trip_duration_list:
+    if min_trip > duration:
+        min_trip = round(duration)
+    if max_trip < duration:
+        max_trip = round(duration)
+    mean_trip += duration
+
+n = len(trip_duration_list)
+if n % 2 == 1:
+    median_trip = sorted(trip_duration_list)[n // 2]
+else:
+    median_trip = sum(sorted(trip_duration_list)[n // 2 - 1:n // 2 + 1]) / 2.0
+
+
+mean_trip = round(mean_trip / len(trip_duration_list))
 
 
 print("\nTASK 9: Printing the min, max, mean and median")
@@ -189,25 +277,33 @@ assert len(user_types) == 582, "TASK 10: Wrong len of start stations."
 input("Press Enter to continue...")
 # TASK 11
 # Go back and make sure you documented your functions. Explain the input, output and what it do. Example:
-# def new_function(param1: int, param2: str) -> list:
-      """
-      Example function with annotations.
-      Args:
-          param1: The first parameter.
-          param2: The second parameter.
-      Returns:
-          List of X values
+#def new_function(param1: int, param2: str) -> list:
+"""
+Example function with annotations.
+Args:
+    param1: The first parameter.
+    param2: The second parameter.
+Returns:
+    List of X values
 
-      """
+"""
 
 input("Press Enter to continue...")
 # TASK 12 - Challenge! (Optional)
-# TODO: Create a function to count user types without hardcoding the types
+# TODO: Create a function to count user types without hardcoding the types, describe docs
 # so we can use this function with a different kind of data.
 print("Will you face it?")
 answer = "no"
 
 def count_items(column_list):
+    """
+    Function that retrieve a Tuple of Customers and Subscribers quantity of the datalist
+    Args:
+        param1: datalist from the chicago.cvs
+    Returns:
+        Tuple of [Customer, Subscriber] quantity
+    """
+
     item_types = []
     count_items = []
     return item_types, count_items
