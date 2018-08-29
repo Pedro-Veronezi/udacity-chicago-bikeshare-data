@@ -4,6 +4,7 @@
 # Here goes the imports
 import csv
 import matplotlib.pyplot as plt
+import collections
 # Let's read the data as a list
 print("Reading the document...")
 with open("chicago.csv", "r") as file_read:
@@ -265,6 +266,8 @@ input("Press Enter to continue...")
 # Gender is easy because usually only have a few options. How about start_stations? How many options does it have?
 # TODO: Check types how many start_stations do we have using set()
 user_types = set()
+for data in data_list:
+    user_types.add(data[3])
 
 print("\nTASK 10: Printing start stations:")
 print(len(user_types))
@@ -299,13 +302,15 @@ def count_items(column_list):
     """
     Function that retrieve a Tuple of Customers and Subscribers quantity of the datalist
     Args:
-        param1: datalist from the chicago.cvs
+        param1: list that will be converted into a tuple
     Returns:
-        Tuple of [Customer, Subscriber] quantity
+        Tuple of [item_types, count_items] quantity
     """
+    counter = collections.Counter(column_list)
+    item_types = counter.keys()
+    count_items = counter.values()
 
-    item_types = []
-    count_items = []
+
     return item_types, count_items
 
 
