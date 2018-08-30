@@ -264,9 +264,14 @@ input("Press Enter to continue...")
 # TASK 10
 # Gender is easy because usually only have a few options. How about start_stations? How many options does it have?
 # TODO: Check types how many start_stations do we have using set()
-user_types = set()
-for data in data_list:
-    user_types.add(data[3])
+
+# old way
+# user_types = set()
+# for data in data_list:
+#    user_types.add(data[3])
+
+# better way, REMEMBER!!
+user_types = set(column_to_list(data_list, 3))
 
 print("\nTASK 10: Printing start stations:")
 print(len(user_types))
@@ -305,10 +310,16 @@ def count_items(column_list):
     Returns:
         Tuple of [item_types, count_items] quantity
     """
-    counter = collections.Counter(column_list)
-    item_types = counter.keys()
-    count_items = counter.values()
 
+    # counter = collections.Counter(column_list)
+    # item_types = counter.keys()
+    # count_items = counter.values()
+
+    item_types = set(column_list)
+    count_items =[]
+
+    for data in item_types:
+        count_items.append(len([d for d in column_list if d == data]))
 
     return item_types, count_items
 
